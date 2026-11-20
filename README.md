@@ -114,7 +114,7 @@ function drawsEntered(address who) external view returns (uint256);
 
 结果：4 人参与、2 人中签、entrants 数组被洗牌、非中签者 `claim` 被 `0x618c7242`（NotWinner）拒绝、重复领取被拒。
 
-**公开场 `drawId = 2`** 已开：10 个名额、开放 1,904,000 块、报名截止 `136550926`（2026-11-30 12:25 北京时间），`createDraw` tx `0x253e9291…8d61`，gas 79,973。任何人都可以在截止前用 `enter(2)` 参与。
+**公开场 `drawId = 2`** 已开：10 个名额、开放 1,904,000 块、报名截止 `136550926`（2026-11-30 12:25 北京时间），`createDraw` tx `0x253e9291…8d61`，gas 79,973。目前 4/10 已报名（就是 draw #1 那四个演示地址，四个独立 Agent ID，非同一人重复钱包），任何人都可以在截止前用 `enter(2)` 参与。
 
 ## 7. 本地运行
 
@@ -133,6 +133,8 @@ node compile.mjs            # 编译，产物写入 build/（bytecode / abi / me
 node deploy.mjs             # 只做 CREATE2 地址推导与链上比对，不发交易
 node deploy.mjs --go        # 真正部署
 node lifecycle.mjs all      # 完整闭环：建场 → 四地址参与 → 结算 → 领奖
+node enter.mjs 2            # 用四个钱包报名某个场次（干跑：先报资格与余额）
+node enter.mjs 2 --go       # 真正报名（value 恒 0，不涉及任何授权）
 node opendraw.mjs --winners 10 --hours 238      # 开一场公开抽签（干跑，打印区块与时间）
 node opendraw.mjs --winners 10 --hours 238 --go # 真正发交易
 node keeper.mjs             # 结算值守（干跑：报告哪些该结算）

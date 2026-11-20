@@ -10,7 +10,8 @@ and that can be enforced on-chain.
 This is OneDraw. Two draws on BNB mainnet.
 Draw one is finished and settled.
 Draw two is open right now: ten slots,
-and anyone holding an Agent ID can enter.
+four already taken, and anyone holding an
+Agent ID can enter.
 
 3
 00:00:22,000 --> 00:00:34,000

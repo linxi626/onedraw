@@ -31,7 +31,7 @@ node demo.mjs        # 先跑一遍，确认五段输出都正常
 | 时间 | 画面 | 旁白（英文，可照读） |
 |---|---|---|
 | 0:00–0:09 | 页面首屏，光标停在 `1 KYC → 1 Agent ID → 1 entry` | "Every raffle on-chain dedupes by wallet. Wallets are free. Agent IDs are not — one per KYC, non-transferable. So one address is one person, and that can be enforced on-chain." |
-| 0:09–0:22 | 向下滚到「全部抽签」，先停在 draw #1「已结算」，再停在 draw #2「报名中」 | "This is OneDraw. Two draws on BNB mainnet. Draw one is finished and settled. Draw two is open right now — ten slots, and anyone holding an Agent ID can enter." |
+| 0:09–0:22 | 向下滚到「全部抽签」，先停在 draw #1「已结算」，再停在 draw #2「报名中」 | "This is OneDraw. Two draws on BNB mainnet. Draw one is finished and settled. Draw two is open right now — ten slots, four already taken, and anyone holding an Agent ID can enter." |
 | 0:22–0:34 | 停在 draw #1 卡片，指中签名单里的 ★ | "The entrant list lives on-chain, not in a screenshot. Four addresses entered, two won, and you can read all of it yourself." |
 | 0:34–0:46 | 点开「发起你自己的抽签」，改名额 10 → 3、时长 72h → 24h，calldata 跟着变 | "Opening a draw needs no permission and no fee. Pick the slots and the window, and the page gives you the exact calldata. Nothing is deployed for you — you call the same contract." |
 | 0:46–1:00 | 切 BscScan `#code`：指 `Exact Match`，再滚到函数列表 | "Source is verified — exact match. And look at the function list: no owner, no admin, no upgrade, no withdraw. It never holds user funds, and participants never approve a token." |
@@ -70,8 +70,8 @@ contract  0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b
 
 [3  draw #2 — open now]
   slots                             10
-  entries so far                    0
-  closes at block                   136550926  (in ~1,898,189 blocks, ~9.9 days)
+  entries so far                    4
+  closes at block                   136550926  (in ~1,897,618 blocks, ~9.9 days)
 
 [4  what the contract refuses]
   claim(draw 1) by a non-winner     reverted 0x618c7242  NotWinner()
