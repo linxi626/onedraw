@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# build output (regenerate with `node compile.mjs`)
+build/
+
+# wallet sessions / env dirs — NEVER commit these
+.baw-envs/
+*.key
+*.pem
+.env
+.env.*
+
+# editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# local scratch
+*.log
+tmp/

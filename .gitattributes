@@ -1,0 +1,13 @@
+* text=auto
+*.mjs text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+
+# Keep the contract source byte-identical to what was verified on chain.
+#
+# The metadata hash inside the deployed bytecode is a hash of the source text,
+# so a line-ending change (CRLF → LF) produces different runtime bytecode and
+# the Sourcify / BscScan "exact match" no longer reproduces. Store it verbatim.
+# NOTE: this rule must come last — in .gitattributes the last matching rule wins.
+src/OneDraw.sol -text

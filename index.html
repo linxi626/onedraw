@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OneDraw — 一个 Agent ID，一次机会</title>
+<style>
+  :root{
+    --bg:#0b0d10; --panel:#14171c; --line:#232830; --text:#e8ecf2; --mute:#8b95a5;
+    --accent:#4ade80; --warn:#fbbf24; --dead:#6b7280;
+    --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: light){
+    :root{--bg:#f7f8fa; --panel:#fff; --line:#e3e6ec; --text:#12151a; --mute:#5c6675;
+          --accent:#0f9d58; --warn:#b45309; --dead:#9aa3b2;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;}
+  .wrap{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+  h1{font-size:28px;margin:0 0 6px;letter-spacing:-.02em}
+  .sub{color:var(--mute);margin:0 0 26px}
+  .kernel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:28px}
+  .kernel b{color:var(--accent);font-weight:600}
+  .kernel p{margin:0;color:var(--mute);font-size:14px}
+  .addr{font-family:var(--mono);font-size:13px;color:var(--mute);word-break:break-all}
+  .addr a{color:var(--accent);text-decoration:none}
+  .bar{display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 14px}
+  .bar h2{font-size:16px;margin:0;font-weight:600}
+  .bar span{font-size:13px;color:var(--mute)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+  .row{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+  .id{font-family:var(--mono);font-size:13px;color:var(--mute)}
+  .prize{font-size:15px;font-weight:500;margin:4px 0 10px}
+  .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line)}
+  .tag.open{color:var(--accent);border-color:var(--accent)}
+  .tag.ready{color:var(--warn);border-color:var(--warn)}
+  .tag.done{color:var(--dead)}
+  .meta{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--mute);margin-top:10px}
+  .meta b{color:var(--text);font-weight:500}
+  .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  button{background:transparent;border:1px solid var(--line);color:var(--text);
+         border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
+  button:hover{border-color:var(--accent);color:var(--accent)}
+  .hint{margin-top:26px;font-size:13px;color:var(--mute)}
+  .hint code{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);
+             padding:1px 6px;border-radius:5px;font-size:12px;word-break:break-all}
+  .empty{color:var(--mute);font-size:14px;padding:26px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+  footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);
+         font-size:12px;color:var(--mute);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>OneDraw</h1>
+  <p class="sub">Sybil-resistant draws for Binance Agent ID holders · BNB Chain</p>
+
+  <div class="kernel">
+    <p><b>1 KYC → 1 Agent ID → 1 entry.</b> An Agent ID is one-per-verified-human and
+    non-transferable, so the holding address is permanently bound to one person.
+    Multi-wallet farming is impossible by construction — no off-chain scoring, no
+    behaviour heuristics, no allowlist curation.</p>
+    <p style="margin-top:10px"><b>1 个 KYC → 1 个 .ai → 1 次参与。</b> Agent ID 一个 KYC 只能领一个且不可转让，
+    所以持有地址永久绑定一个真人。多钱包刷量在这里从源头就不成立。</p>
+  </div>
+
+  <div class="addr">
+    contract <a id="ca" href="#" target="_blank" rel="noopener">—</a> ·
+    <span id="blk">block —</span>
+  </div>
+
+  <div class="bar"><h2>全部抽签</h2><span id="cnt">—</span></div>
+  <div id="list"><div class="empty">读取链上数据中…</div></div>
+
+  <p class="hint">
+    This page never connects a wallet. To take part, copy the calldata below and send it
+    as a <code>value = 0</code> contract call from your own wallet or agent — preview,
+    then broadcast. Free, no approve, no signature request on this page.
+    <br><br>
+    本页不连接钱包。参与方式：把下面给出的 calldata 用你自己的钱包/agent 发起
+    一次 <code>value = 0</code> 的合约调用，预览确认后再广播。全程免费，无需 approve。
+  </p>
+
+  <footer>
+    <span>no owner · no fees · no token · never holds user funds</span>
+    <span>
+      <a href="https://bscscan.com/address/0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b#code" target="_blank" rel="noopener" style="color:inherit">verified source</a>
+      · MIT
+    </span>
+  </footer>
+</div>
+
+<script>
+const CONTRACT = "0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b";
+const RPCS = ["https://bsc-dataseed.binance.org", "https://bsc-rpc.publicnode.com"];
+const SEL = {
+  drawCount: "0x08222d58",
+  draws: "0x0cc36c36",
+  entryCount: "0x1d1b039c",
+  enter: "0xa59f3e0c",
+  settle: "0x8df82800",
+  claim: "0x379607f5"
+};
+const pad = n => BigInt(n).toString(16).padStart(64, "0");
+
+async function rpc(method, params) {
+  let lastErr;
+  for (const url of RPCS) {
+    try {
+      const r = await fetch(url, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params })
+      });
+      const j = await r.json();
+      if (j.error) throw new Error(j.error.message);
+      return j.result;
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr;
+}
+const call = data => rpc("eth_call", [{ to: CONTRACT, data }, "latest"]);
+
+function words(hex) {
+  const d = (hex || "0x").slice(2);
+  const out = [];
+  for (let i = 0; i + 64 <= d.length; i += 64) out.push(BigInt("0x" + d.slice(i, i + 64)));
+  return out;
+}
+const short = a => a.slice(0, 6) + "…" + a.slice(-4);
+
+function render(draws, head) {
+  const list = document.getElementById("list");
+  if (!draws.length) {
+    list.innerHTML = '<div class="empty">还没有抽签。第一场正在准备中。</div>';
+    return;
+  }
+  list.innerHTML = draws.slice().reverse().map(d => {
+    const remaining = d.closeBlock - head;
+    let tag, cls;
+    if (d.settled) { tag = "已结算"; cls = "done"; }
+    else if (head >= d.settleBlock) { tag = "待结算"; cls = "ready"; }
+    else if (remaining > 0) { tag = "报名中"; cls = "open"; }
+    else { tag = "已截止"; cls = "ready"; }
+
+    const prize = d.nft === "0x0000000000000000000000000000000000000000"
+      ? "无托管奖品（链下兑付 / 荣誉）"
+      : "NFT #" + d.tokenId + " · " + short(d.nft);
+    const when = d.settled ? "已结算" : (remaining > 0 ? "还剩 " + remaining.toLocaleString() + " 块" : "等待结算区块");
+
+    const acts = [];
+    if (!d.settled && remaining > 0) acts.push(["复制参与 calldata", SEL.enter + pad(d.id)]);
+    if (!d.settled && head >= d.settleBlock && head <= d.settleBlock + 255) acts.push(["复制结算 calldata", SEL.settle + pad(d.id)]);
+    if (d.settled) acts.push(["复制领取 calldata（仅中签者有效）", SEL.claim + pad(d.id)]);
+
+    return `<div class="card">
+      <div class="row">
+        <div>
+          <div class="id">DRAW #${d.id}</div>
+          <div class="prize">${prize}</div>
+        </div>
+        <span class="tag ${cls}">${tag}</span>
+      </div>
+      <div class="meta">
+        <span>名额 <b>${d.winners}</b></span>
+        <span>参与 <b>${d.entries}</b></span>
+        <span>${when}</span>
+        <span>发起人 <b>${short(d.sponsor)}</b></span>
+      </div>
+      ${acts.length ? `<div class="acts">${acts.map(([label, data]) =>
+        `<button data-copy="${data}">${label}</button>`).join("")}</div>` : ""}
+    </div>`;
+  }).join("");
+
+  list.querySelectorAll("button[data-copy]").forEach(b => {
+    b.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "已复制 calldata"; }
+      catch { b.textContent = b.dataset.copy.slice(0, 18) + "…"; }
+      setTimeout(() => location.reload(), 1200);
+    });
+  });
+}
+
+async function main() {
+  const ca = document.getElementById("ca");
+  ca.textContent = CONTRACT;
+  ca.href = "https://bscscan.com/address/" + CONTRACT;
+
+  try {
+    const head = parseInt(await rpc("eth_blockNumber", []), 16);
+    document.getElementById("blk").textContent = "block " + head.toLocaleString();
+
+    const n = Number(words(await call(SEL.drawCount))[0] || 0n);
+    const draws = [];
+    for (let i = 0; i < n; i++) {
+      const w = words(await call(SEL.draws + pad(i)));
+      if (!w.length) continue;
+      draws.push({
+        id: i,
+        sponsor: "0x" + w[0].toString(16).padStart(40, "0"),
+        nft: "0x" + w[1].toString(16).padStart(40, "0"),
+        tokenId: w[2],
+        closeBlock: Number(w[3]),
+        settleBlock: Number(w[4]),
+        winners: Number(w[5]),
+        entries: Number(w[6]),
+        settled: w[7] === 1n
+      });
+    }
+    document.getElementById("cnt").textContent = n + " 场";
+    render(draws, head);
+  } catch (e) {
+    document.getElementById("list").innerHTML =
+      '<div class="empty">链上读取失败：' + (e.message || "RPC 不可达") + "</div>";
+  }
+}
+main();
+</script>
+</body>
+</html>
