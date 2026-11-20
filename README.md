@@ -11,7 +11,7 @@
 - 部署交易：`0xab3c6a64050f6c0c04935f5185f1fae81665303236bd69f510342ad281a7c5cc`
 - 在线演示：https://onedraw.app.workbuddy.host/
 - 源码验证：BscScan `Exact Match` · Sourcify `exact_match`
-- 参赛：Binance Wallet × BNB Chain · Agent ID Hackathon
+- 参赛：Binance Wallet × BNB Chain · Agent ID Hackathon（提交材料见 [SUBMISSION.md](SUBMISSION.md)）
 
 ---
 
