@@ -236,14 +236,20 @@ function card(d, head, feature) {
   </div>`;
 }
 
-// For a settled draw, read the on-chain entrant list and mark the winners.
-async function fillWinners(d) {
+// Read the on-chain entrant list. Settled draws get winners marked with a star;
+// open draws just list who is already in, so visitors can see the list is real.
+async function fillEntrants(d) {
   const box = document.getElementById("w" + d.id);
-  if (!box || !d.settled || d.entries === 0) return;
+  if (!box || d.entries === 0) return;
   if (d.entries > 40) { box.textContent = d.entries + " 位参与者（名单过长，请在 BscScan 查看 entrants）"; return; }
   const w = words(await call(SEL.entrants + pad(d.id)));
   const n = Number(w[1] || 0n);
   const list = w.slice(2, 2 + n).map(addrOf);
+  if (!d.settled) {
+    box.innerHTML = `已报名 ${list.length} 位（链上 entrants(${d.id})）：<br>` +
+      list.map(a => `　 ${a}`).join("<br>");
+    return;
+  }
   const flags = await Promise.all(list.map(a =>
     call(SEL.isWinner + pad(d.id) + a.slice(2).toLowerCase().padStart(64, "0"))
       .then(r => BigInt(r) === 1n).catch(() => false)));
@@ -355,8 +361,8 @@ async function main() {
                   : '<div class="empty">没有其他场次。</div>';
 
     bindCopy(document);
-    if (live) fillWinners(live);
-    draws.filter(d => d.settled).forEach(fillWinners);
+    if (live) fillEntrants(live);
+    draws.filter(d => d.settled).forEach(fillEntrants);
 
     build(head);
     ["f_winners", "f_hours", "f_nft", "f_token"].forEach(id =>
