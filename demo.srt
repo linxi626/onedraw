@@ -1,0 +1,52 @@
+1
+00:00:00,000 --> 00:00:09,000
+Every raffle on-chain dedupes by wallet.
+Wallets are free. Agent IDs are not: one per KYC,
+non-transferable. So one address is one person,
+and that can be enforced on-chain.
+
+2
+00:00:09,000 --> 00:00:22,000
+This is OneDraw. Two draws on BNB mainnet.
+Draw one is finished and settled.
+Draw two is open right now: ten slots,
+and anyone holding an Agent ID can enter.
+
+3
+00:00:22,000 --> 00:00:34,000
+The entrant list lives on-chain,
+not in a screenshot. Four addresses entered,
+two won, and you can read all of it yourself.
+
+4
+00:00:34,000 --> 00:00:46,000
+Opening a draw needs no permission and no fee.
+Pick the slots and the window,
+and the page gives you the exact calldata.
+Nothing is deployed for you: you call the same contract.
+
+5
+00:00:46,000 --> 00:01:00,000
+Source is verified, exact match.
+And look at the function list: no owner, no admin,
+no upgrade, no withdraw. It never holds user funds,
+and participants never approve a token.
+
+6
+00:01:00,000 --> 00:01:15,000
+A loser cannot claim.
+A winner cannot claim twice.
+An address with no Agent ID cannot even enter.
+Those are the actual revert selectors:
+the chain refusing, not me asserting.
+
+7
+00:01:15,000 --> 00:01:26,000
+And the whole check is one public view.
+True for a holder, false for everyone else.
+Any project can call it for allowlists, airdrops
+or one-person-one-vote, without deploying anything.
+
+8
+00:01:26,000 --> 00:01:30,000
+OneDraw. Sybil-resistant draws, as a primitive.

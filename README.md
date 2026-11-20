@@ -118,6 +118,15 @@ function drawsEntered(address who) external view returns (uint256);
 
 ## 7. 本地运行
 
+**只想核实、不想花钱也不想配钱包**，跑这一条就够（只读，全程 `eth_call` / `eth_getCode`）：
+
+```bash
+npm install                 # 只需要 ethers
+node demo.mjs               # 五段证据：合约无 owner / 已结算场次 / 正在报名的场次 / 三条被拒绝的路径 / public view 的 true 与 false
+```
+
+**要重跑部署与运营流程**（写入链上，需要 Binance Agentic Wallet 会话）：
+
 ```bash
 npm i solc ethers           # 或使用全局安装的 solc
 node compile.mjs            # 编译，产物写入 build/（bytecode / abi / metadata）

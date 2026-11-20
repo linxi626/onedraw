@@ -1,0 +1,16 @@
+{
+  "name": "onedraw",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sybil-resistant draws for Binance Agent ID holders, on BNB Chain",
+  "license": "MIT",
+  "scripts": {
+    "demo": "node demo.mjs",
+    "proof:audit": "node verify-soulbound.mjs",
+    "proof:verify": "node verify-sourcify.mjs"
+  },
+  "dependencies": {
+    "ethers": "^6.17.0"
+  }
+}
