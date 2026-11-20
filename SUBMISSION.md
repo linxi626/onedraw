@@ -11,7 +11,7 @@
 | Independent match | https://sourcify.dev/server/v2/contract/56/0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b?fields=all (`exact_match`) |
 | Deploy tx | `0xab3c6a64050f6c0c04935f5185f1fae81665303236bd69f510342ad281a7c5cc` |
 | Open now | draw #2 — 10 slots, entries close at block `136550926` (2026-11-30 12:25 UTC+8) |
-| Source repo | this folder (`git` initialised, ready to push) |
+| Source repo | https://github.com/linxi626/onedraw (MIT, 23 files) |
 | Demo script | [DEMO-VIDEO.md](DEMO-VIDEO.md) · Partner kit: [TRACK1-OUTREACH.md](TRACK1-OUTREACH.md) |
 
 ---
@@ -181,7 +181,7 @@ So the plan is to be *used*, not to inflate:
 | Live demo | https://onedraw.app.workbuddy.host/?sharecode=UK7Q26BERD |
 | Contract (BSC) | `0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b` |
 | Verified source | BscScan `#code` (Exact Match) + Sourcify `exact_match` |
-| Repo | push this folder to GitHub, then paste the URL |
+| Repo | https://github.com/linxi626/onedraw |
 | Demo video | 90s: open site → show a live draw → show `isVerifiedAgent` returning true → show the rejected non-winner `claim` |
 | Team | 1 builder |
 
@@ -192,7 +192,7 @@ So the plan is to be *used*, not to inflate:
 - [x] repo prepared (git history, LICENSE, sanitised scripts, no keys)
 - [x] core premise measured on-chain (zero transfers across 6,508 mints)
 - [x] a public draw is live for the judging window (draw #2, closes 2026-11-30)
-- [ ] push repo to GitHub (needs account access)
+- [x] repo pushed to GitHub — https://github.com/linxi626/onedraw
 - [ ] 90-second demo video (shot list + narration ready in [DEMO-VIDEO.md](DEMO-VIDEO.md))
 - [ ] 3-5 partner draws scheduled (Track 1) — outreach copy ready in [TRACK1-OUTREACH.md](TRACK1-OUTREACH.md)
 - [ ] Chainlink VRF version (optional, post-submission)
