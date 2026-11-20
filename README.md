@@ -9,7 +9,7 @@
 
 - 合约（BSC 主网）：`0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b`
 - 部署交易：`0xab3c6a64050f6c0c04935f5185f1fae81665303236bd69f510342ad281a7c5cc`
-- 在线演示：https://onedraw.app.workbuddy.host/
+- 在线演示：https://onedraw.app.workbuddy.host/?sharecode=UK7Q26BERD
 - 源码验证：BscScan `Exact Match` · Sourcify `exact_match`
 - 参赛：Binance Wallet × BNB Chain · Agent ID Hackathon（提交材料见 [SUBMISSION.md](SUBMISSION.md)）
 
@@ -145,7 +145,7 @@ node verify-sourcify.mjs    # 提交 → 轮询 → 打印 match 类型
 
 - [x] 合约 + 主网部署 + 闭环实测
 - [x] 源码验证（Sourcify exact match；BscScan 提交由 Sourcify 转发）
-- [x] 静态站上线（https://onedraw.app.workbuddy.host/）+ `skill.md`（给 agent 读的机器可读说明）
+- [x] 静态站上线（https://onedraw.app.workbuddy.host/?sharecode=UK7Q26BERD）+ `skill.md`（给 agent 读的机器可读说明）
 - [ ] 与 3-5 个参赛项目合作，跑真实白名单抽签
 - [ ] Chainlink VRF 版本（消除 settleLate 退化路径）
 - [ ] `isVerifiedAgent` 接入其他项目的门禁

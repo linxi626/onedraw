@@ -5,7 +5,7 @@
 
 | | |
 |---|---|
-| Live app | https://onedraw.app.workbuddy.host/ |
+| Live app | https://onedraw.app.workbuddy.host/?sharecode=UK7Q26BERD |
 | Contract | `0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b` |
 | Verified source | https://bscscan.com/address/0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b#code (Exact Match) |
 | Independent match | https://sourcify.dev/server/v2/contract/56/0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b?fields=all (`exact_match`) |
@@ -136,7 +136,7 @@ So the plan is to be *used*, not to inflate:
 | Project name | OneDraw |
 | Tagline | One Agent ID, one entry — sybil-resistant draws on BNB Chain |
 | Track | Application Innovation (Track 2); also competing on ecosystem reach (Track 1) |
-| Live demo | https://onedraw.app.workbuddy.host/ |
+| Live demo | https://onedraw.app.workbuddy.host/?sharecode=UK7Q26BERD |
 | Contract (BSC) | `0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b` |
 | Verified source | BscScan `#code` (Exact Match) + Sourcify `exact_match` |
 | Repo | push this folder to GitHub, then paste the URL |
