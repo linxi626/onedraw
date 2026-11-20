@@ -10,7 +10,9 @@
 | Verified source | https://bscscan.com/address/0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b#code (Exact Match) |
 | Independent match | https://sourcify.dev/server/v2/contract/56/0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b?fields=all (`exact_match`) |
 | Deploy tx | `0xab3c6a64050f6c0c04935f5185f1fae81665303236bd69f510342ad281a7c5cc` |
+| Open now | draw #2 — 10 slots, entries close at block `136550926` (2026-11-30 12:25 UTC+8) |
 | Source repo | this folder (`git` initialised, ready to push) |
+| Demo script | [DEMO-VIDEO.md](DEMO-VIDEO.md) · Partner kit: [TRACK1-OUTREACH.md](TRACK1-OUTREACH.md) |
 
 ---
 
@@ -91,6 +93,32 @@ Honest limitation: `settleLate()` uses the previous block hash, which a settler 
 It exists only as a last resort after the window expires, is separately evented, and is
 documented as degraded. A production version replaces it with Chainlink VRF.
 
+## 5b. The premise, measured rather than assumed
+
+Everything here rests on one sentence: an Agent ID cannot be moved between people. That is
+checkable, so we checked it instead of citing it.
+
+`verify-soulbound.mjs` walks every `Transfer` event the Agent ID registry emitted over
+4,000,000 blocks (since 2026-10-30) and separates mints from address-to-address moves:
+
+```
+mints                 6508
+address → address     0
+burns                 0
+failed chunks         0
+```
+
+Zero moves across 6,508 minting events. Two honest limits, stated up front:
+
+- On-chain we can prove *the transfer path was never used*, not that the bytecode forbids it.
+  Zero occurrences, not a revert.
+- "One KYC, one ID" is an issuance rule of Binance / SPACE ID; it cannot be verified from the
+  chain, only trusted. The sybil-resistance guarantee is therefore "one address = one
+  KYC-verified Binance account", which is the strongest claim the data actually supports.
+
+Anyone can reproduce the number: `node verify-soulbound.mjs`. The mint count drifts as the
+chain grows; the transfer count is the one that matters and it is zero.
+
 ## 6. On-chain evidence (all mainnet, no mocks)
 
 | Step | Tx | Gas |
@@ -102,9 +130,23 @@ documented as degraded. A production version replaces it with Chainlink VRF.
 | `claim` (winner) | `0xd33e6ff8…455a` | 52,249 |
 | Non-winner `claim` | rejected with `NotWinner()` `0x618c7242` | — |
 | Repeat `claim` | rejected | — |
+| `createDraw` — public draw #2 (10 slots, 1,904,000 blocks) | `0x253e9291…8d61` | 79,973 |
 
-Full hashes and decoded state: `draw.json`, `deployed.json`; the same draw is rendered
-live on the demo site.
+Full hashes and decoded state: `draw.json`, `deployed.json`, `draws-opened.jsonl`; the same
+draws are rendered live on the demo site, including the on-chain entrant list with winners
+marked, so nothing has to be taken on trust.
+
+Draw #2 is open for entries until block `136550926` — a judge holding an Agent ID can
+enter it during judging and see the result settle afterwards. That is the point: the
+submission is not a recording of something that happened, it is a live contract.
+
+**One number worth stating plainly**: `blockhash` is only readable for 256 blocks, which on
+BSC (0.45 s/block, measured) is about **1.9 minutes**. That is a property of the EVM, not a
+tunable parameter. The contract therefore ships two settlement paths — `settle()` inside the
+window, `settleLate()` after it, with a distinct `SettledLate` event so a degraded settlement
+can never pass as a normal one — and `keeper.mjs` prefers the normal path automatically.
+Any visitor can also trigger either from the page, so settlement does not depend on us being
+online.
 
 ## 7. Track 1 — ecosystem reach (how we plan to earn it honestly)
 
@@ -148,7 +190,9 @@ So the plan is to be *used*, not to inflate:
 - [x] contract on mainnet, source verified, lifecycle tested
 - [x] live demo page published
 - [x] repo prepared (git history, LICENSE, sanitised scripts, no keys)
+- [x] core premise measured on-chain (zero transfers across 6,508 mints)
+- [x] a public draw is live for the judging window (draw #2, closes 2026-11-30)
 - [ ] push repo to GitHub (needs account access)
-- [ ] 90-second demo video
-- [ ] 3-5 partner draws scheduled (Track 1)
+- [ ] 90-second demo video (shot list + narration ready in [DEMO-VIDEO.md](DEMO-VIDEO.md))
+- [ ] 3-5 partner draws scheduled (Track 1) — outreach copy ready in [TRACK1-OUTREACH.md](TRACK1-OUTREACH.md)
 - [ ] Chainlink VRF version (optional, post-submission)

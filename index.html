@@ -7,12 +7,12 @@
 <style>
   :root{
     --bg:#0b0d10; --panel:#14171c; --line:#232830; --text:#e8ecf2; --mute:#8b95a5;
-    --accent:#4ade80; --warn:#fbbf24; --dead:#6b7280;
+    --accent:#4ade80; --warn:#fbbf24; --dead:#6b7280; --field:#0f1216;
     --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
   }
   @media (prefers-color-scheme: light){
     :root{--bg:#f7f8fa; --panel:#fff; --line:#e3e6ec; --text:#12151a; --mute:#5c6675;
-          --accent:#0f9d58; --warn:#b45309; --dead:#9aa3b2;}
+          --accent:#0f9d58; --warn:#b45309; --dead:#9aa3b2; --field:#fbfcfd;}
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);
@@ -20,19 +20,20 @@
   .wrap{max-width:860px;margin:0 auto;padding:40px 20px 80px}
   h1{font-size:28px;margin:0 0 6px;letter-spacing:-.02em}
   .sub{color:var(--mute);margin:0 0 26px}
-  .kernel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:28px}
+  .kernel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:22px}
   .kernel b{color:var(--accent);font-weight:600}
   .kernel p{margin:0;color:var(--mute);font-size:14px}
-  .addr{font-family:var(--mono);font-size:13px;color:var(--mute);word-break:break-all}
+  .addr{font-family:var(--mono);font-size:13px;color:var(--mute);word-break:break-all;margin-bottom:6px}
   .addr a{color:var(--accent);text-decoration:none}
   .bar{display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 14px}
   .bar h2{font-size:16px;margin:0;font-weight:600}
   .bar span{font-size:13px;color:var(--mute)}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+  .card.feature{border-color:var(--accent);box-shadow:0 0 0 1px rgba(74,222,128,.12)}
   .row{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
   .id{font-family:var(--mono);font-size:13px;color:var(--mute)}
   .prize{font-size:15px;font-weight:500;margin:4px 0 10px}
-  .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line)}
+  .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
   .tag.open{color:var(--accent);border-color:var(--accent)}
   .tag.ready{color:var(--warn);border-color:var(--warn)}
   .tag.done{color:var(--dead)}
@@ -42,12 +43,26 @@
   button{background:transparent;border:1px solid var(--line);color:var(--text);
          border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;font-family:inherit}
   button:hover{border-color:var(--accent);color:var(--accent)}
+  button.primary{border-color:var(--accent);color:var(--accent)}
   .hint{margin-top:26px;font-size:13px;color:var(--mute)}
   .hint code{font-family:var(--mono);background:var(--panel);border:1px solid var(--line);
              padding:1px 6px;border-radius:5px;font-size:12px;word-break:break-all}
   .empty{color:var(--mute);font-size:14px;padding:26px;text-align:center;border:1px dashed var(--line);border-radius:14px}
+  .winners{margin-top:12px;font-size:13px;color:var(--mute);font-family:var(--mono);line-height:1.9;word-break:break-all}
+  .winners .w{color:var(--accent)}
+  .form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .form label{display:block;font-size:12px;color:var(--mute);margin-bottom:5px}
+  .form input{width:100%;background:var(--field);border:1px solid var(--line);border-radius:9px;
+              color:var(--text);padding:8px 11px;font-size:14px;font-family:var(--mono)}
+  .form input:focus{outline:none;border-color:var(--accent)}
+  .form .full{grid-column:1 / -1}
+  .out{margin-top:14px;font-size:13px;color:var(--mute);line-height:1.8}
+  .out b{color:var(--text);font-weight:500}
+  .out code{font-family:var(--mono);font-size:12px;background:var(--field);border:1px solid var(--line);
+            padding:2px 6px;border-radius:5px;word-break:break-all;display:inline-block;max-width:100%}
   footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);
          font-size:12px;color:var(--mute);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  @media (max-width:560px){.form{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -66,19 +81,44 @@
 
   <div class="addr">
     contract <a id="ca" href="#" target="_blank" rel="noopener">—</a> ·
-    <span id="blk">block —</span>
+    <span id="blk">block —</span> · <span id="bt">—</span>
   </div>
+
+  <section id="live"></section>
 
   <div class="bar"><h2>全部抽签</h2><span id="cnt">—</span></div>
   <div id="list"><div class="empty">读取链上数据中…</div></div>
 
+  <div class="bar"><h2>发起你自己的抽签</h2><span>anyone can sponsor · no registration · no fee</span></div>
+  <div class="card">
+    <div class="form">
+      <div>
+        <label>中签名额（1–100）</label>
+        <input id="f_winners" value="5" inputmode="numeric">
+      </div>
+      <div>
+        <label>开放时长（小时）</label>
+        <input id="f_hours" value="24" inputmode="decimal">
+      </div>
+      <div class="full">
+        <label>托管奖品 NFT 合约（可留空 = 荣誉 / 链下兑付）</label>
+        <input id="f_nft" placeholder="0x… 或留空">
+      </div>
+      <div class="full">
+        <label>tokenId（仅在填了 NFT 合约时生效）</label>
+        <input id="f_token" placeholder="0" inputmode="numeric">
+      </div>
+    </div>
+    <div class="out" id="out">填好参数后这里会给出 calldata。</div>
+  </div>
+
   <p class="hint">
-    This page never connects a wallet. To take part, copy the calldata below and send it
-    as a <code>value = 0</code> contract call from your own wallet or agent — preview,
-    then broadcast. Free, no approve, no signature request on this page.
+    This page never connects a wallet and never asks for a signature. Every action is a
+    <code>value = 0</code> contract call you broadcast yourself — copy the calldata, preview
+    it in your wallet or agent, then send.
     <br><br>
-    本页不连接钱包。参与方式：把下面给出的 calldata 用你自己的钱包/agent 发起
-    一次 <code>value = 0</code> 的合约调用，预览确认后再广播。全程免费，无需 approve。
+    本页不连接钱包、不请求签名。所有操作都是 <code>value = 0</code> 的合约调用，复制下面的
+    calldata 用你自己的钱包 / agent 预览后广播。参与免费，无需 approve。
   </p>
 
   <footer>
@@ -96,12 +136,17 @@ const RPCS = ["https://bsc-dataseed.binance.org", "https://bsc-rpc.publicnode.co
 const SEL = {
   drawCount: "0x08222d58",
   draws: "0x0cc36c36",
-  entryCount: "0x1d1b039c",
+  entrants: "0xe7b4e5ab",
+  isWinner: "0xbdd415af",
   enter: "0xa59f3e0c",
   settle: "0x8df82800",
-  claim: "0x379607f5"
+  settleLate: "0x1bec71e7",
+  claim: "0x379607f5",
+  createDraw: "0xfd41d7fb"
 };
+const ZERO = "0x0000000000000000000000000000000000000000";
 const pad = n => BigInt(n).toString(16).padStart(64, "0");
+let BS = 0.45;   // block time in seconds, refined from chain on load
 
 async function rpc(method, params) {
   let lastErr;
@@ -119,7 +164,8 @@ async function rpc(method, params) {
   }
   throw lastErr;
 }
-const call = data => rpc("eth_call", [{ to: CONTRACT, data }, "latest"]);
+const call = (data, from) =>
+  rpc("eth_call", [from ? { from, to: CONTRACT, data } : { to: CONTRACT, data }, "latest"]);
 
 function words(hex) {
   const d = (hex || "0x").slice(2);
@@ -127,60 +173,146 @@ function words(hex) {
   for (let i = 0; i + 64 <= d.length; i += 64) out.push(BigInt("0x" + d.slice(i, i + 64)));
   return out;
 }
+const addrOf = w => "0x" + w.toString(16).padStart(40, "0");
 const short = a => a.slice(0, 6) + "…" + a.slice(-4);
 
-function render(draws, head) {
-  const list = document.getElementById("list");
-  if (!draws.length) {
-    list.innerHTML = '<div class="empty">还没有抽签。第一场正在准备中。</div>';
-    return;
+function human(blocks) {
+  const s = Math.abs(blocks) * BS;
+  if (s < 90) return Math.round(s) + " 秒";
+  if (s < 5400) return Math.round(s / 60) + " 分钟";
+  if (s < 172800) return (s / 3600).toFixed(1) + " 小时";
+  return (s / 86400).toFixed(1) + " 天";
+}
+
+function actBtn(label, data, primary) {
+  return `<button class="${primary ? "primary" : ""}" data-copy="${data}">${label}</button>`;
+}
+
+function card(d, head, feature) {
+  const remaining = d.closeBlock - head;
+  let tag, cls;
+  if (d.settled && d.entries === 0) { tag = "空场（无参与者）"; cls = "done"; }
+  else if (d.settled) { tag = "已结算"; cls = "done"; }
+  else if (head <= d.settleBlock + 255 && head >= d.settleBlock) { tag = "可结算"; cls = "ready"; }
+  else if (head > d.settleBlock + 255) { tag = "超时待结算"; cls = "ready"; }
+  else if (remaining > 0) { tag = "报名中"; cls = "open"; }
+  else { tag = "已截止"; cls = "ready"; }
+
+  const prize = d.nft === ZERO
+    ? "无托管奖品（荣誉 / 链下兑付）"
+    : "NFT #" + d.tokenId + " · " + short(d.nft);
+  const when = d.settled
+    ? "已完成"
+    : (remaining > 0 ? "还剩 " + human(remaining) : "等待结算");
+
+  const acts = [];
+  if (!d.settled && remaining > 0) acts.push(actBtn("复制参与 calldata", SEL.enter + pad(d.id), true));
+  if (!d.settled && head >= d.settleBlock && head <= d.settleBlock + 255) {
+    acts.push(actBtn("复制结算 calldata（正常路径）", SEL.settle + pad(d.id), true));
   }
-  list.innerHTML = draws.slice().reverse().map(d => {
-    const remaining = d.closeBlock - head;
-    let tag, cls;
-    if (d.settled) { tag = "已结算"; cls = "done"; }
-    else if (head >= d.settleBlock) { tag = "待结算"; cls = "ready"; }
-    else if (remaining > 0) { tag = "报名中"; cls = "open"; }
-    else { tag = "已截止"; cls = "ready"; }
+  if (!d.settled && head > d.settleBlock + 255) {
+    acts.push(actBtn("复制延时结算 calldata", SEL.settleLate + pad(d.id), true));
+  }
+  if (d.settled) acts.push(actBtn("复制领取 calldata（仅中签者有效）", SEL.claim + pad(d.id)));
 
-    const prize = d.nft === "0x0000000000000000000000000000000000000000"
-      ? "无托管奖品（链下兑付 / 荣誉）"
-      : "NFT #" + d.tokenId + " · " + short(d.nft);
-    const when = d.settled ? "已结算" : (remaining > 0 ? "还剩 " + remaining.toLocaleString() + " 块" : "等待结算区块");
+  const win = '<div class="winners" id="w' + d.id + '"></div>';
 
-    const acts = [];
-    if (!d.settled && remaining > 0) acts.push(["复制参与 calldata", SEL.enter + pad(d.id)]);
-    if (!d.settled && head >= d.settleBlock && head <= d.settleBlock + 255) acts.push(["复制结算 calldata", SEL.settle + pad(d.id)]);
-    if (d.settled) acts.push(["复制领取 calldata（仅中签者有效）", SEL.claim + pad(d.id)]);
-
-    return `<div class="card">
-      <div class="row">
-        <div>
-          <div class="id">DRAW #${d.id}</div>
-          <div class="prize">${prize}</div>
-        </div>
-        <span class="tag ${cls}">${tag}</span>
+  return `<div class="card${feature ? " feature" : ""}" data-draw="${d.id}">
+    <div class="row">
+      <div>
+        <div class="id">DRAW #${d.id}${feature ? " · 公开场" : ""}</div>
+        <div class="prize">${prize}</div>
       </div>
-      <div class="meta">
-        <span>名额 <b>${d.winners}</b></span>
-        <span>参与 <b>${d.entries}</b></span>
-        <span>${when}</span>
-        <span>发起人 <b>${short(d.sponsor)}</b></span>
-      </div>
-      ${acts.length ? `<div class="acts">${acts.map(([label, data]) =>
-        `<button data-copy="${data}">${label}</button>`).join("")}</div>` : ""}
-    </div>`;
-  }).join("");
+      <span class="tag ${cls}">${tag}</span>
+    </div>
+    <div class="meta">
+      <span>名额 <b>${d.winners}</b></span>
+      <span>参与 <b>${d.entries}</b></span>
+      <span>${when}</span>
+      <span>发起人 <b>${short(d.sponsor)}</b></span>
+    </div>
+    ${acts.length ? `<div class="acts">${acts.join("")}</div>` : ""}
+    ${win}
+  </div>`;
+}
 
-  list.querySelectorAll("button[data-copy]").forEach(b => {
+// For a settled draw, read the on-chain entrant list and mark the winners.
+async function fillWinners(d) {
+  const box = document.getElementById("w" + d.id);
+  if (!box || !d.settled || d.entries === 0) return;
+  if (d.entries > 40) { box.textContent = d.entries + " 位参与者（名单过长，请在 BscScan 查看 entrants）"; return; }
+  const w = words(await call(SEL.entrants + pad(d.id)));
+  const n = Number(w[1] || 0n);
+  const list = w.slice(2, 2 + n).map(addrOf);
+  const flags = await Promise.all(list.map(a =>
+    call(SEL.isWinner + pad(d.id) + a.slice(2).toLowerCase().padStart(64, "0"))
+      .then(r => BigInt(r) === 1n).catch(() => false)));
+  box.innerHTML = list.map((a, i) =>
+    flags[i] ? `<span class="w">★ ${a} 中签</span>` : `　 ${a}`).join("<br>");
+}
+
+function bindCopy(scope) {
+  scope.querySelectorAll("button[data-copy]").forEach(b => {
     b.addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "已复制 calldata"; }
-      catch { b.textContent = b.dataset.copy.slice(0, 18) + "…"; }
-      setTimeout(() => location.reload(), 1200);
+      try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "已复制"; }
+      catch { b.textContent = b.dataset.copy.slice(0, 20) + "…"; }
+      setTimeout(() => location.reload(), 1400);
     });
   });
 }
 
+// ---------------------------------------------------------------- builder
+function durationBlocks(hours) {
+  let d = Math.round(hours * 3600 / BS);
+  if (d < 20) d = 20;
+  if (d > 2000000) d = 2000000;
+  return d;
+}
+
+function build(head) {
+  const out = document.getElementById("out");
+  const winners = parseInt(document.getElementById("f_winners").value || "0", 10);
+  const hours = parseFloat(document.getElementById("f_hours").value || "0");
+  const nftRaw = document.getElementById("f_nft").value.trim();
+  const tokenId = document.getElementById("f_token").value.trim() || "0";
+
+  if (!(winners >= 1 && winners <= 100)) {
+    out.innerHTML = '<b style="color:var(--warn)">名额必须是 1–100 的整数</b>';
+    return;
+  }
+  if (!(hours > 0)) { out.innerHTML = "填一个开放时长（小时）。"; return; }
+  let nft = ZERO, token = 0n;
+  if (nftRaw) {
+    if (!/^0x[0-9a-fA-F]{40}$/.test(nftRaw)) { out.innerHTML = '<b style="color:var(--warn)">NFT 合约地址格式不对</b>'; return; }
+    if (winners !== 1) { out.innerHTML = '<b style="color:var(--warn)">托管 NFT 时名额只能是 1（一次托管一个 token）</b>'; return; }
+    nft = nftRaw.toLowerCase();
+    token = BigInt(tokenId || "0");
+  }
+
+  const dur = durationBlocks(hours);
+  const closeBlock = head + dur;
+  const data = SEL.createDraw + nft.slice(2).padStart(64, "0") + pad(token) + pad(winners) + pad(dur);
+  const closesAt = new Date(Date.now() + dur * BS * 1000);
+  const settleBy = new Date(Date.now() + (dur + 256) * BS * 1000);
+
+  out.innerHTML = `
+    <div>预计截止区块 <b>${closeBlock.toLocaleString()}</b> ≈ <b>${closesAt.toLocaleString()}</b>
+    （${hours} 小时 / ${dur.toLocaleString()} 块）</div>
+    <div>结算窗口：<b>${closesAt.toLocaleString()}</b> 起，到 <b>${settleBy.toLocaleString()}</b> 结束
+    （约 1.9 分钟）</div>
+    <div style="margin-top:8px">createDraw calldata</div>
+    <code>${data}</code>
+    <div class="acts">
+      <button class="primary" data-copy="${data}">复制 createDraw calldata</button>
+    </div>
+    ${nft !== ZERO ? `<div style="margin-top:10px;color:var(--warn)">托管 NFT：先对该合约
+      <code>approve(${CONTRACT}, ${token})</code>，createDraw 会把 token 直接转进合约。
+      无人领取时，结算 2000 块后你可以 <code>reclaimPrize</code> 取回。</div>` : ""}
+    <div style="margin-top:10px">发出后，参与者调用 <code>${SEL.enter} + drawId</code> 即可报名。</div>`;
+  bindCopy(out);
+}
+
+// ------------------------------------------------------------------ main
 async function main() {
   const ca = document.getElementById("ca");
   ca.textContent = CONTRACT;
@@ -190,25 +322,45 @@ async function main() {
     const head = parseInt(await rpc("eth_blockNumber", []), 16);
     document.getElementById("blk").textContent = "block " + head.toLocaleString();
 
+    // measure real block time from the last 300 blocks instead of hardcoding it
+    try {
+      const a = await rpc("eth_getBlockByNumber", ["0x" + (head - 300).toString(16), false]);
+      const b = await rpc("eth_getBlockByNumber", ["0x" + head.toString(16), false]);
+      const dt = parseInt(b.timestamp, 16) - parseInt(a.timestamp, 16);
+      if (dt > 0) BS = dt / 300;
+    } catch { /* keep default */ }
+    document.getElementById("bt").textContent = "≈" + BS.toFixed(2) + "s/block";
+
     const n = Number(words(await call(SEL.drawCount))[0] || 0n);
     const draws = [];
     for (let i = 0; i < n; i++) {
       const w = words(await call(SEL.draws + pad(i)));
       if (!w.length) continue;
       draws.push({
-        id: i,
-        sponsor: "0x" + w[0].toString(16).padStart(40, "0"),
-        nft: "0x" + w[1].toString(16).padStart(40, "0"),
-        tokenId: w[2],
-        closeBlock: Number(w[3]),
-        settleBlock: Number(w[4]),
-        winners: Number(w[5]),
-        entries: Number(w[6]),
-        settled: w[7] === 1n
+        id: i, sponsor: addrOf(w[0]), nft: addrOf(w[1]), tokenId: w[2],
+        closeBlock: Number(w[3]), settleBlock: Number(w[4]),
+        winners: Number(w[5]), entries: Number(w[6]), settled: w[7] === 1n
       });
     }
     document.getElementById("cnt").textContent = n + " 场";
-    render(draws, head);
+
+    // the most recent draw that is still open gets the spotlight
+    const live = draws.slice().reverse().find(d => !d.settled && head < d.closeBlock);
+    document.getElementById("live").innerHTML = live
+      ? card(live, head, true)
+      : "";
+    const rest = draws.slice().reverse().filter(d => !live || d.id !== live.id);
+    document.getElementById("list").innerHTML =
+      rest.length ? rest.map(d => card(d, head, false)).join("")
+                  : '<div class="empty">没有其他场次。</div>';
+
+    bindCopy(document);
+    if (live) fillWinners(live);
+    draws.filter(d => d.settled).forEach(fillWinners);
+
+    build(head);
+    ["f_winners", "f_hours", "f_nft", "f_token"].forEach(id =>
+      document.getElementById(id).addEventListener("input", () => build(head)));
   } catch (e) {
     document.getElementById("list").innerHTML =
       '<div class="empty">链上读取失败：' + (e.message || "RPC 不可达") + "</div>";

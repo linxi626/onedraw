@@ -11,6 +11,7 @@
 - 部署交易：`0xab3c6a64050f6c0c04935f5185f1fae81665303236bd69f510342ad281a7c5cc`
 - 在线演示：https://onedraw.app.workbuddy.host/?sharecode=UK7Q26BERD
 - 源码验证：BscScan `Exact Match` · Sourcify `exact_match`
+- **正在开放的一场**：`drawId = 2`，10 个名额，报名截止区块 `136550926`（约 2026-11-30 12:25 北京时间）
 - 参赛：Binance Wallet × BNB Chain · Agent ID Hackathon（提交材料见 [SUBMISSION.md](SUBMISSION.md)）
 
 ---
@@ -28,6 +29,21 @@
 | 链下 KYC 名单 | 要信任中心化服务器，无法被其他合约组合调用 |
 
 Agent ID 是目前唯一同时满足「链上可读、一 KYC 一个、不可转让、官方生态」的凭证。OneDraw 不把它当装饰性的门禁，而是当成**唯一性的根源**：
+
+**「不可转让」不是听说的，是量出来的。** `verify-soulbound.mjs` 用 `eth_getLogs` 扫遍 Agent ID 注册表近期全部 `Transfer` 事件，把铸造（`from = 0x0`）和地址间转移分开计数：
+
+```
+registry 0x60b9262456de011f7d15a54cdd8c48baaa8b022f
+blocks   130648639 → 134648639   (4,000,000 blocks, since 2026-10-30)
+mints                 6508
+address → address     0
+burns                 0
+failed chunks         0
+```
+
+**6,508 次铸造，0 次地址间转移。** 铸造数会随链增长而变化（每跑一次都不一样），但转移数始终是 0 —— 这才是要复核的那个数。任何人都可以跑这条命令，不依赖我们的说法。
+
+需要说清的边界：链上能证明的是「转让路径没有被用过」，不是「转让在字节码层面被禁用」——我们没看到 revert，我们看到的是零发生。至于「一 KYC 一个」，那是 Binance / SPACE ID 的发行规则，链上无法独立验证，只能依赖其 KYC 的唯一性承诺。把这两层分开讲，比笼统宣称「完全不可伪造」更经得起追问。
 
 ```solidity
 require(agentId.balanceOf(msg.sender) > 0);   // 是真人
@@ -59,6 +75,8 @@ seed        = keccak256(blockhash(settleBlock), drawId)
 - 结算函数无权限，任何人可调 —— 谁调都不改变结果
 
 **诚实的退化路径**：`blockhash` 只能读最近 256 个区块。如果 256 个区块内无人结算（keeper 掉线），合约提供 `settleLate()`，用上一块哈希兜底。它会发出**独立事件 `SettledLate`**，永远不会伪装成正常结算。生产版本应接 Chainlink VRF；黑客松版本选择零依赖 + 全链可审计。
+
+**这个窗口在 BSC 上只有约 1.9 分钟**（实测 0.45 秒/块 × 256）。这不是可以调参的常数，是 `blockhash` 的物理限制。因此仓库里带了 `keeper.mjs`：它每次都优先走正常 `settle()`，只有在窗口确实过期后才退到 `settleLate()`，两条路径都不会重复结算。页面在窗口过期后也会直接给出延时结算的 calldata，任何人都能收尾。
 
 ## 4. 安全边界（刻意不做的事）
 
@@ -95,6 +113,8 @@ function drawsEntered(address who) external view returns (uint256);
 
 结果：4 人参与、2 人中签、entrants 数组被洗牌、非中签者 `claim` 被 `0x618c7242`（NotWinner）拒绝、重复领取被拒。
 
+**公开场 `drawId = 2`** 已开：10 个名额、开放 1,904,000 块、报名截止 `136550926`（2026-11-30 12:25 北京时间），`createDraw` tx `0x253e9291…8d61`，gas 79,973。任何人都可以在截止前用 `enter(2)` 参与。
+
 ## 7. 本地运行
 
 ```bash
@@ -103,7 +123,12 @@ node compile.mjs            # 编译，产物写入 build/（bytecode / abi / me
 node deploy.mjs             # 只做 CREATE2 地址推导与链上比对，不发交易
 node deploy.mjs --go        # 真正部署
 node lifecycle.mjs all      # 完整闭环：建场 → 四地址参与 → 结算 → 领奖
+node opendraw.mjs --winners 10 --hours 238      # 开一场公开抽签（干跑，打印区块与时间）
+node opendraw.mjs --winners 10 --hours 238 --go # 真正发交易
+node keeper.mjs             # 结算值守（干跑：报告哪些该结算）
+node keeper.mjs --go        # 真正结算（优先 settle，过期才 settleLate）
 node verify-sourcify.mjs    # 源码验证（无需 API key）
+node verify-soulbound.mjs   # 复核 Agent ID 是否真的不可转让（扫 400 万块的 Transfer 事件）
 ```
 
 编译设置被固定在 `compile.mjs` 里（solc 0.8.26 / optimizer on / runs 200）。改任何一项都会改变 metadata 哈希，进而改变 CREATE2 地址，也会让源码验证从 `exact_match` 掉级。
@@ -116,8 +141,17 @@ node verify-sourcify.mjs    # 源码验证（无需 API key）
 | `BAW_BIN` | 未设 `BAW_JS` 时使用的可执行名，默认 `baw` |
 | `BAW_ENVS` | 存放各钱包会话目录的父目录，默认 `~/.baw-envs` |
 | `WALLET_A` … `WALLET_D` | 覆盖 `lifecycle.mjs` 里的演示地址 |
+| `SPONSOR_ENV` | `opendraw.mjs` 用哪个钱包环境发起抽签，默认 `wallet-a` |
+| `KEEPER_ENV` | `keeper.mjs` 用哪个钱包环境结算，默认 `wallet-a` |
+| `ONEDRAW` / `BSC_RPC` | 覆盖合约地址与 RPC，便于在测试网复现 |
 
 前端是单文件 `index.html`，无需构建，直接用任意静态托管。它**不连接钱包**，只读链上状态并生成 calldata，由用户自己在钱包里预览确认 —— 与 AgentStreak / Agent Check-In 的做法一致，避免任何签名钓鱼面。
+
+页面不只是橱窗，它做三件实事：
+
+1. 读出全部抽签，标出正在报名的那一场，并给出 `enter` 的 calldata
+2. 结算窗口内给 `settle`，过期后自动改成 `settleLate` —— 任何访客都能收尾，不依赖我们在线
+3. **「发起你自己的抽签」表单**：填名额 / 时长 / 可选 NFT，实时算出预计截止区块与时间，生成 `createDraw` 的 calldata。任何项目方不需要我们的许可就能开一场，这正是"原语"该有的样子
 
 ## 8. 源码验证
 
