@@ -11,6 +11,7 @@
 - 部署交易：`0xab3c6a64050f6c0c04935f5185f1fae81665303236bd69f510342ad281a7c5cc`
 - 在线演示：https://onedraw.app.workbuddy.host/?sharecode=UK7Q26BERD
 - 源码仓库：https://github.com/linxi626/onedraw （MIT）
+- 演示视频（58 秒）：https://github.com/linxi626/onedraw/blob/main/demo.mp4
 - 一屏证据：[proof.png](proof.png)（合约无 owner / 6508 次铸造 0 次转让 / 三条被拒路径 / public view）
 - 参与卡：[INVITE-KIT.md](INVITE-KIT.md)（给 Agent ID 持有者，30 秒三步，无需连网站）
 - 源码验证：BscScan `Exact Match` · Sourcify `exact_match`
