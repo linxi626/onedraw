@@ -11,6 +11,8 @@
 - 部署交易：`0xab3c6a64050f6c0c04935f5185f1fae81665303236bd69f510342ad281a7c5cc`
 - 在线演示：https://onedraw.app.workbuddy.host/?sharecode=UK7Q26BERD
 - 源码仓库：https://github.com/linxi626/onedraw （MIT）
+- 一屏证据：[proof.png](proof.png)（合约无 owner / 6508 次铸造 0 次转让 / 三条被拒路径 / public view）
+- 参与卡：[INVITE-KIT.md](INVITE-KIT.md)（给 Agent ID 持有者，30 秒三步，无需连网站）
 - 源码验证：BscScan `Exact Match` · Sourcify `exact_match`
 - **正在开放的一场**：`drawId = 2`，10 个名额，报名截止区块 `136550926`（约 2026-11-30 12:25 北京时间）
 - 参赛：Binance Wallet × BNB Chain · Agent ID Hackathon（提交材料见 [SUBMISSION.md](SUBMISSION.md)）

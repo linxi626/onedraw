@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>OneDraw — evidence card</title>
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --panel: #12161b;
+    --line: #232a33;
+    --fg: #e8edf4;
+    --dim: #8b97a6;
+    --accent: #f0b90b;
+    --ok: #35c97a;
+    --bad: #ff6b5e;
+    --mono: "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+    --sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    font-size: 19px;
+    line-height: 1.5;
+    padding: 44px 56px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    overflow: hidden;
+  }
+
+  header { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 18px; }
+  h1 { font-size: 44px; letter-spacing: -0.5px; font-weight: 700; line-height: 1.1; }
+  h1 span { color: var(--accent); }
+  .tagline { color: var(--dim); font-size: 20px; margin-top: 8px; }
+  .stamp { text-align: right; color: var(--dim); font-size: 16px; font-family: var(--mono); line-height: 1.75; }
+  .stamp b { color: var(--fg); font-weight: 600; }
+
+  main { flex: 1; display: grid; grid-template-columns: 1.04fr 1fr; gap: 24px; min-height: 0; }
+  .col { display: flex; flex-direction: column; gap: 18px; justify-content: space-between; min-height: 0; }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 24px; }
+  .card h2 { font-size: 15px; letter-spacing: 1.7px; text-transform: uppercase; color: var(--dim); font-weight: 600; margin-bottom: 13px; }
+  .card h2 em { font-style: normal; color: var(--accent); margin-right: 9px; }
+
+  .mono { font-family: var(--mono); }
+  .addr { font-family: var(--mono); font-size: 21px; color: var(--accent); word-break: break-all; letter-spacing: 0.2px; }
+  .kv { display: grid; grid-template-columns: 152px 1fr; gap: 7px 14px; font-size: 18px; }
+  .kv dt { color: var(--dim); }
+  .kv dd { font-family: var(--mono); font-size: 16px; word-break: break-all; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 15px; }
+  .chip { border: 1px solid #2b3a2f; background: #131f18; color: var(--ok); border-radius: 999px; padding: 6px 13px; font-size: 15px; }
+  .chip.warn { border-color: #3a3320; background: #1f1b12; color: var(--accent); }
+
+  .big { display: flex; gap: 40px; align-items: flex-end; margin-bottom: 4px; }
+  .big div { display: flex; flex-direction: column; }
+  .big b { font-size: 58px; line-height: 1; font-weight: 700; letter-spacing: -1.5px; font-variant-numeric: tabular-nums; }
+  .big small { color: var(--dim); font-size: 14px; margin-top: 9px; letter-spacing: .6px; }
+  .big .zero b { color: var(--ok); }
+  .note { color: var(--dim); font-size: 15px; margin-top: 13px; line-height: 1.6; }
+  .note b { color: #b9c4d2; font-weight: 600; }
+
+  ul.uses { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 26px; }
+  ul.uses li { font-size: 17px; color: #d7dee8; padding-left: 18px; position: relative; }
+  ul.uses li::before { content: ""; position: absolute; left: 0; top: 9px; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); }
+  ul.uses li span { display: block; color: var(--dim); font-size: 14px; line-height: 1.45; margin-top: 2px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  td { padding: 8px 0; border-bottom: 1px solid #1b2027; vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.sel { font-family: var(--mono); color: var(--bad); white-space: nowrap; padding-right: 16px; font-size: 15px; }
+  td.name { font-family: var(--mono); color: #d7dee8; white-space: nowrap; padding-right: 16px; font-size: 15px; }
+  td.why { color: var(--dim); }
+
+  .view { display: flex; gap: 44px; }
+  .view div { font-family: var(--mono); font-size: 16px; }
+  .view b { display: block; font-family: var(--sans); font-size: 15px; color: var(--dim); font-weight: 500; margin-bottom: 5px; }
+  .t { color: var(--ok); } .f { color: #d7dee8; }
+
+  footer { border-top: 1px solid var(--line); padding-top: 15px; display: flex; justify-content: space-between; align-items: center; color: var(--dim); font-size: 15px; }
+  footer .cmd { font-family: var(--mono); color: var(--fg); background: #12161b; border: 1px solid var(--line); border-radius: 8px; padding: 8px 13px; font-size: 15px; }
+  footer .links { display: flex; gap: 24px; font-family: var(--mono); font-size: 14px; }
+  footer .links span b { color: var(--fg); font-weight: 500; }
+</style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>One<span>Draw</span></h1>
+      <div class="tagline">Sybil-resistant draws for Binance Agent ID holders &middot; live on BNB Chain mainnet</div>
+    </div>
+    <div class="stamp">
+      read-only evidence &middot; every number below is one <span class="mono">eth_call</span> away<br />
+      snapshot <b>2026-11-20 15:20 UTC+8</b> &middot; block <b>134,653,823</b>
+    </div>
+  </header>
+
+  <main>
+    <div class="col">
+      <div class="card">
+        <h2><em>01</em>the contract</h2>
+        <div class="addr">0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b</div>
+        <dl class="kv" style="margin-top:15px">
+          <dt>deploy tx</dt><dd>0xab3c6a64050f6c0c04935f5185f1fae81665303236bd69f510342ad281a7c5cc</dd>
+          <dt>runtime</dt><dd>5,151 bytes &middot; solc 0.8.26 &middot; optimizer 200</dd>
+          <dt>source</dt><dd>BscScan <b>Exact Match</b> &middot; Sourcify <b>exact_match</b></dd>
+        </dl>
+        <div class="chips">
+          <span class="chip">no owner()</span>
+          <span class="chip">no withdraw</span>
+          <span class="chip">no upgrade path</span>
+          <span class="chip">never holds user funds</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><em>02</em>why "one wallet, one entry" finally means something</h2>
+        <div class="big">
+          <div><b>6,508</b><small>AGENT ID MINTS</small></div>
+          <div class="zero"><b>0</b><small>ADDRESS &rarr; ADDRESS TRANSFERS</small></div>
+          <div class="zero"><b>0</b><small>BURNS</small></div>
+        </div>
+        <div class="note">
+          4,000,000 blocks scanned on the Agent ID registry <span class="mono">0x60b92624&hellip;022f</span>
+          (blocks 130,648,639 &rarr; 134,648,639), every <span class="mono">Transfer</span> event split into mints,
+          moves and burns. <b>Zero transfers means the identity has never been traded</b> &mdash; that is what makes
+          one address equal one person here.<br />
+          <b>Honest limit:</b> this measures that the transfer path was never used, not that bytecode forbids it.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><em>03</em>the same view unlocks the rest</h2>
+        <ul class="uses">
+          <li>Allowlists<span>no snapshot, no spreadsheet, no trust</span></li>
+          <li>Airdrops<span>a fresh wallet cannot farm a second share</span></li>
+          <li>One-person-one-vote<span>grants, DAO seats, jury duty</span></li>
+          <li>Ticket drops<span>what this contract does, as a primitive</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card">
+        <h2><em>04</em>draw #1 &mdash; finished, settled on chain</h2>
+        <dl class="kv">
+          <dt>entered</dt><dd>4 addresses, all distinct Agent ID holders</dd>
+          <dt>winners</dt><dd>2 &mdash; blockhash draw, entrants list shuffled on chain</dd>
+          <dt>loser claimed?</dt><dd style="color:var(--bad)">reverted 0x618c7242 &middot; NotWinner()</dd>
+        </dl>
+      </div>
+
+      <div class="card">
+        <h2><em>05</em>draw #2 &mdash; open right now</h2>
+        <dl class="kv">
+          <dt>slots taken</dt><dd>4 / 10</dd>
+          <dt>closes</dt><dd>block 136,550,926 &middot; 2026-11-30 12:25 UTC+8</dd>
+          <dt>cost to enter</dt><dd>0 &middot; no token approval, ever</dd>
+        </dl>
+      </div>
+
+      <div class="card">
+        <h2><em>06</em>what the chain refuses</h2>
+        <table>
+          <tr><td class="sel">0x618c7242</td><td class="name">NotWinner()</td><td class="why">a non-winner calling claim, or a winner claiming twice</td></tr>
+          <tr><td class="sel">0x78636683</td><td class="name">AlreadyEntered()</td><td class="why">the same Agent ID entering one draw twice</td></tr>
+          <tr><td class="sel">0xea11784e</td><td class="name">NotAgentIdHolder()</td><td class="why">an address with no Agent ID trying to enter</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2><em>07</em>the reusable part &mdash; one public view</h2>
+        <div class="view">
+          <div><b>isVerifiedAgent(0x6c6A...34De)</b><span class="t">true</span></div>
+          <div><b>isVerifiedAgent(0x0000...dEaD)</b><span class="f">false</span></div>
+        </div>
+        <div class="note" style="margin-top:11px">
+          Any project can gate on this call without deploying anything. True for a holder, false for everyone else.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="cmd">npm install &amp;&amp; node demo.mjs &nbsp;&mdash;&nbsp; reproduces all of the above, no wallet needed</div>
+    <div class="links">
+      <span>repo <b>github.com/linxi626/onedraw</b></span>
+      <span>app <b>onedraw.app.workbuddy.host</b></span>
+      <span>code <b>bscscan.com/address/0x98a4&hellip;Ec1b#code</b></span>
+    </div>
+  </footer>
+</body>
+</html>

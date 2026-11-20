@@ -12,7 +12,7 @@
 | Deploy tx | `0xab3c6a64050f6c0c04935f5185f1fae81665303236bd69f510342ad281a7c5cc` |
 | Open now | draw #2 — 10 slots, 4 taken (the four demo wallets, same ones as draw #1), entries close at block `136550926` (2026-11-30 12:25 UTC+8) |
 | Source repo | https://github.com/linxi626/onedraw (MIT, 23 files) |
-| Demo script | [DEMO-VIDEO.md](DEMO-VIDEO.md) · Partner kit: [TRACK1-OUTREACH.md](TRACK1-OUTREACH.md) |
+| Evidence card | [proof.png](proof.png) — one screen, all five claims · Partner kit: [INVITE-KIT.md](INVITE-KIT.md) · Outreach: [TRACK1-OUTREACH.md](TRACK1-OUTREACH.md) |
 
 ---
 
@@ -182,7 +182,7 @@ So the plan is to be *used*, not to inflate:
 | Contract (BSC) | `0x98a4aC5a1Db2Efe4c61130F8B929b076D905Ec1b` |
 | Verified source | BscScan `#code` (Exact Match) + Sourcify `exact_match` |
 | Repo | https://github.com/linxi626/onedraw |
-| Demo video | 90s: open site → show a live draw → show `isVerifiedAgent` returning true → show the rejected non-winner `claim` |
+| Demo (no video) | live app + one command: `npm install && node demo.mjs` prints the same five proofs a video would show · screenshot: [proof.png](proof.png) |
 | Team | 1 builder |
 
 ## 10. Open items before submitting
@@ -193,6 +193,6 @@ So the plan is to be *used*, not to inflate:
 - [x] core premise measured on-chain (zero transfers across 6,508 mints)
 - [x] a public draw is live for the judging window (draw #2, closes 2026-11-30)
 - [x] repo pushed to GitHub — https://github.com/linxi626/onedraw
-- [ ] 90-second demo video (shot list + narration ready in [DEMO-VIDEO.md](DEMO-VIDEO.md))
+- [x] demo material without a video: evidence card `proof.png` + reproducible `demo.mjs` (shot list still in [DEMO-VIDEO.md](DEMO-VIDEO.md) if we ever record one)
 - [ ] 3-5 partner draws scheduled (Track 1) — outreach copy ready in [TRACK1-OUTREACH.md](TRACK1-OUTREACH.md)
 - [ ] Chainlink VRF version (optional, post-submission)
